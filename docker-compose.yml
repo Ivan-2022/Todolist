@@ -1,5 +1,22 @@
 version: "3.9"
 services:
+  api:
+    build:
+      context: .
+    ports:
+      - 8000:80
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    migrations:
+      build:
+        context: .
+      depends_on:
+        postgres:
+          condition: service_healthy
+      command: flask db upgrade
   main_todolist_db:
     image: postgres:12.4-alpine
     volumes:
@@ -10,7 +27,11 @@ services:
       - POSTGRES_DB=todolist
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=111111
-      - POSTGRES_HOST=localhost
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   todolist_postgres_data:
