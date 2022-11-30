@@ -1,5 +1,5 @@
 name: Build and push action
-on: [ push ]
+on: [push]
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
