@@ -33,7 +33,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.USERPASSWORD }}
+          password: ${{ secrets.PASSWORD }}
           source: "deploy/docker-compose.yml"
           target: "Todolist"
           strip_components: 1
@@ -42,8 +42,8 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.USERPASSWORD }}
+          password: ${{ secrets.PASSWORD }}
           script: |
             cd Todolist
-            echo ${{ secrets.USERPASSWORD }} | sudo -S docker-compose down
-            echo ${{ secrets.USERPASSWORD }} | sudo -S docker-compose up -d
+            echo ${{ secrets.PASSWORD }} | sudo -S docker-compose down
+            echo ${{ secrets.PASSWORD }} | sudo -S docker-compose up -d
