@@ -34,8 +34,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    volumes:
-      - ./.env:/app/.env
+#    volumes:
+#      - ./.env:/app/.env
     command: python3 manage.py migrate
   postgres:
     image: postgres:12.4-alpine
