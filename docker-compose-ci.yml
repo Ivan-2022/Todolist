@@ -7,7 +7,7 @@ services:
     ports:
       - "80:80"
   api:
-    image: ${DOCKER_USERNAME}/diploma_todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: ivanim/diploma_todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
 #    environment:
 #      POSTGRES_HOST: ${POSTGRES_HOST}
 #      POSTGRES_USER: ${POSTGRES_USER}
@@ -24,7 +24,7 @@ services:
     volumes:
       - ./todolist/:/app
   migrations:
-    image: ${DOCKER_USERNAME}/diploma_todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: ivanim/diploma_todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
 #    environment:
 #      POSTGRES_HOST: ${POSTGRES_HOST}
 #      POSTGRES_USER: ${POSTGRES_USER}
