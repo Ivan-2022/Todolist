@@ -25,26 +25,26 @@ services:
       - ./todolist/:/app
   migrations:
     image: ivanim/diploma_todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
-#    environment:
-#      POSTGRES_HOST: ${POSTGRES_HOST}
-#      POSTGRES_USER: ${POSTGRES_USER}
-#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-#      POSTGRES_DB: ${POSTGRES_DB}
-#      SECRET_KEY: ${SECRET_KEY}
+    environment:
+      POSTGRES_HOST: $POSTGRES_HOST
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
+      SECRET_KEY: $SECRET_KEY
     depends_on:
       postgres:
         condition: service_healthy
-#    volumes:
-#      - ./.env:/app/.env
+    volumes:
+      - ./.env:/app/.env
     command: python3 manage.py migrate
   postgres:
     image: postgres:12.4-alpine
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
       interval: 5s
       timeout: 5s
       retries: 5
