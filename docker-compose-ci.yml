@@ -36,7 +36,8 @@ services:
         condition: service_healthy
     volumes:
       - ./.env:/app/.env
-    command: python3 manage.py migrate
+    command: >
+      sh -c "python3 manage.py migrate"
   postgres:
     image: postgres:12.4-alpine
     environment:
