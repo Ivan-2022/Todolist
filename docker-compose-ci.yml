@@ -25,8 +25,6 @@ services:
       - "8000:8000"
     env_file:
       - ./.env
-    volumes:
-      - ./todolist/:/app
   migrations:
     image: ivanim/diploma_todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     env_file:
@@ -34,8 +32,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    volumes:
-      - ./.env:/app/.env
     command: python manage.py migrate
   postgres:
     image: postgres:latest
@@ -45,7 +41,7 @@ services:
       POSTGRES_DB: $POSTGRES_DB
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -54,7 +50,7 @@ services:
     env_file:
       - ./.env
     volumes:
-      - ./todolist_postgres_data:/var/lib/postgresql/data
+      - todolist_postgres_data:/var/lib/postgresql/data
 
 volumes:
   todolist_postgres_data:
