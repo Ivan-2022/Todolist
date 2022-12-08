@@ -26,7 +26,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(required=True, write_only=True)
+    username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
 
     class Meta:
@@ -46,4 +46,19 @@ class LoginSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'email']
+        fields = ('id', 'username', 'first_name', 'last_name', 'email')
+
+
+class UpdatePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True, validators=[validate_password])
+
+    def validate(self, attrs):
+        if not self.instance.check_password(attrs['old_password']):
+            raise ValidationError({'old_password': 'field is incorrect'})
+        return attrs
+
+    def update(self, instance: User, validated_data):
+        instance.password = make_password(validated_data['new_password'])
+        instance.save(update_fields=['password'])
+        return instance
