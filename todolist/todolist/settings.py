@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'social_django',
+    'todolist.goals',
 ]
 
 MIDDLEWARE = [
