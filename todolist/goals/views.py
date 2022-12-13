@@ -67,7 +67,7 @@ class GoalListView(ListAPIView):
     filterset_class = GoalDateFilter
     ordering_fields = ["title", "created"]
     ordering = ["title"]
-    search_fields = ["title"]
+    search_fields = ["title", "description"]
 
     def get_queryset(self):
         return Goal.objects.filter(user=self.request.user).exclude(status=Goal.Status.archived)
