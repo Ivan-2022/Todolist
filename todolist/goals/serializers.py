@@ -25,7 +25,7 @@ class GoalCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
-        model = Category
+        model = Goal
         read_only_fields = ("id", "created", "updated", "user")
         fields = "__all__"
 

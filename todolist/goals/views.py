@@ -70,9 +70,7 @@ class GoalListView(ListAPIView):
     search_fields = ["title"]
 
     def get_queryset(self):
-        return Goal.objects.filter(
-            user=self.request.user, is_deleted=False
-        )
+        return Goal.objects.filter(user=self.request.user).exclude(status=Goal.Status.archived)
 
 
 class GoalView(RetrieveUpdateDestroyAPIView):
@@ -81,7 +79,7 @@ class GoalView(RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Goal.objects.filter(user=self.request.user, is_deleted=False)
+        return Goal.objects.filter(user=self.request.user)
 
     def perform_destroy(self, instance):
         instance.is_deleted = True
