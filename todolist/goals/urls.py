@@ -1,6 +1,6 @@
 from django.urls import path
 
-from views import GoalCategoryCreateView, GoalCategoryListView, GoalCategoryView, GoalCreateView, GoalListView, \
+from .views import GoalCategoryCreateView, GoalCategoryListView, GoalCategoryView, GoalCreateView, GoalListView, \
     GoalView, GoalCommentCreateView, GoalCommentListView, GoalCommentView
 
 urlpatterns = [

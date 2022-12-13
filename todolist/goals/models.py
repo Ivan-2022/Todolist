@@ -1,8 +1,6 @@
 from django.db import models
 from django.utils import timezone
 
-from todolist.core.models import User
-
 
 class DatesModelMixin(models.Model):
     class Meta:
@@ -24,7 +22,7 @@ class Category(DatesModelMixin):
         verbose_name_plural = "Категории"
 
     title = models.CharField(verbose_name="Название", max_length=255)
-    user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.PROTECT)
+    user = models.ForeignKey('core.User', verbose_name="Автор", on_delete=models.PROTECT)
     is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
 
     def __str__(self):
@@ -51,7 +49,7 @@ class Goal(DatesModelMixin):
     description = models.TextField(verbose_name="Описание", null=True, blank=True)
     category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.CASCADE, related_name="goals")
     due_date = models.DateTimeField(verbose_name="Дедлайн", null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Автор", related_name="goals")
+    user = models.ForeignKey('core.User', on_delete=models.PROTECT, verbose_name="Автор", related_name="goals")
 
     class Meta:
         verbose_name = "Цель"
@@ -62,7 +60,7 @@ class Goal(DatesModelMixin):
 
 
 class Comment(DatesModelMixin):
-    user = models.ForeignKey(User, verbose_name="Автор", related_name="goal_comments", on_delete=models.PROTECT)
+    user = models.ForeignKey('core.User', verbose_name="Автор", related_name="goal_comments", on_delete=models.PROTECT)
     goal = models.ForeignKey(Goal, verbose_name="Цель", related_name="goal_comments", on_delete=models.PROTECT)
     text = models.TextField(verbose_name="Текст")
 
