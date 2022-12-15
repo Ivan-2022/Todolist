@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Category, Goal, Comment, Board, BoardParticipant
 from core.serializers import ProfileSerializer
 
-from ..core.models import User
+from core.models import User
 
 
 class BoardParticipantSerializer(serializers.ModelSerializer):
