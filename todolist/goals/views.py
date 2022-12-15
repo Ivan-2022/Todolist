@@ -6,9 +6,15 @@ from rest_framework.pagination import LimitOffsetPagination
 
 from .filters import GoalDateFilter
 from .models import Category, Goal, Comment, Board
-from .permissions import BoardPermissions
+from .permissions import BoardPermissions, CategoryPermissions
 from .serializers import GoalCategoryCreateSerializer, GoalCategorySerializer, GoalCreateSerializer, GoalSerializer, \
-    GoalCommentCreateSerializer, GoalCommentSerializer, BoardSerializer, BoardListSerializer
+    GoalCommentCreateSerializer, GoalCommentSerializer, BoardSerializer, BoardListSerializer, BoardCreateSerializer
+
+
+class BoardCreateView(CreateAPIView):
+    model = Board
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = BoardCreateSerializer
 
 
 class BoardView(RetrieveUpdateDestroyAPIView):
@@ -43,7 +49,7 @@ class BoardListView(ListAPIView):
 
 class GoalCategoryCreateView(CreateAPIView):
     model = Category
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CategoryPermissions]
     serializer_class = GoalCategoryCreateSerializer
 
 
@@ -58,21 +64,21 @@ class GoalCategoryListView(ListAPIView):
     ]
     ordering_fields = ["title", "created"]
     ordering = ["title"]
-    search_fields = ["title"]
+    search_fields = ["title", "board"]
 
     def get_queryset(self):
         return Category.objects.filter(
-            user=self.request.user, is_deleted=False
+            board__participants__user=self.request.user, is_deleted=False
         )
 
 
 class GoalCategoryView(RetrieveUpdateDestroyAPIView):
     model = Category
     serializer_class = GoalCategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CategoryPermissions]
 
     def get_queryset(self):
-        return Category.objects.filter(user=self.request.user, is_deleted=False)
+        return Category.objects.filter(board__participants__user=self.request.user, is_deleted=False)
 
     def perform_destroy(self, instance):
         instance.is_deleted = True

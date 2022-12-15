@@ -1,14 +1,15 @@
 from django.contrib import admin
 
-from .models import Category, Goal
+from .models import Category, Goal, Board
 
 
 class GoalCategoryAdmin(admin.ModelAdmin):
     list_display = ("title", "user", "created", "updated")
-    search_fields = ("title", "user")
+    search_fields = ("title", "user", "board")
 
 
 admin.site.register(Category, GoalCategoryAdmin)
+admin.site.register(Board)
 
 
 class GoalAdmin(admin.ModelAdmin):

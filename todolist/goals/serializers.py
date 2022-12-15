@@ -8,7 +8,7 @@ from ..core.models import User
 
 class BoardParticipantSerializer(serializers.ModelSerializer):
     role = serializers.ChoiceField(
-        required=True, choices=BoardParticipant.editable_choices
+        required=True, choices=BoardParticipant.Role.choices
     )
     user = serializers.SlugRelatedField(
         slug_field="username", queryset=User.objects.all()
@@ -88,8 +88,14 @@ class GoalCategoryCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        read_only_fields = ("id", "created", "updated", "user")
+        read_only_fields = ("id", "created", "updated", "user", "board")
         fields = "__all__"
+
+    def validate(self, validated_data):
+        board = validated_data["board"]
+        if self.instance.board.id != board.id:
+            raise serializers.ValidationError("cannot transfer a category from a board to another board")
+        return validated_data
 
 
 class GoalCategorySerializer(serializers.ModelSerializer):
@@ -98,7 +104,7 @@ class GoalCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = "__all__"
-        read_only_fields = ("id", "created", "updated", "user")
+        read_only_fields = ("id", "created", "updated", "user", "board")
 
 
 class GoalCreateSerializer(serializers.ModelSerializer):
