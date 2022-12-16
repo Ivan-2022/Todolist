@@ -119,7 +119,7 @@ class GoalCreateSerializer(serializers.ModelSerializer):
         if value.is_deleted:
             raise serializers.ValidationError("not allowed in deleted category")
 
-        if value.user != self.context["request"].user:
+        if self.instance.category.board_id != value.board_id:
             raise serializers.ValidationError("not owner of category")
 
         return value
@@ -137,7 +137,7 @@ class GoalSerializer(serializers.ModelSerializer):
         if value.is_deleted:
             raise serializers.ValidationError("not allowed in deleted category")
 
-        if value.user != self.context["request"].user:
+        if self.instance.category.board_id != value.board_id:
             raise serializers.ValidationError("not owner of category")
 
         return value
