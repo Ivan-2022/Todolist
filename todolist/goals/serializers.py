@@ -91,12 +91,6 @@ class GoalCategoryCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "created", "updated", "user", "board")
         fields = "__all__"
 
-    def validate(self, validated_data):
-        board = validated_data["board"]
-        if self.instance.board.id != board.id:
-            raise serializers.ValidationError("cannot transfer a category from a board to another board")
-        return validated_data
-
 
 class GoalCategorySerializer(serializers.ModelSerializer):
     user = ProfileSerializer(read_only=True)
@@ -105,6 +99,12 @@ class GoalCategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = "__all__"
         read_only_fields = ("id", "created", "updated", "user", "board")
+
+    def validate_board(self, validated_data):
+        board = validated_data.get("board")
+        if self.instance.board.id != board.id:
+            raise serializers.ValidationError("cannot transfer a category from a board to another board")
+        return validated_data
 
 
 class GoalCreateSerializer(serializers.ModelSerializer):
