@@ -44,6 +44,12 @@ class GoalPermissions(permissions.BasePermission):
 
 class CommentPermissions(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
+        if not request.user.is_authenticated:
+            return False
         if request.method in permissions.SAFE_METHODS:
-            return True
-        return obj.user_id == request.user.id
+            return BoardParticipant.objects.filter(
+                user=request.user, board=obj.goal.category.board
+            ).exists()
+        return BoardParticipant.objects.filter(
+            user=request.user, board=obj.goal.category.board, role__in=[BoardParticipant.Role.owner,
+                                                                  BoardParticipant.Role.writer]).exists()
