@@ -25,7 +25,7 @@ class CategoryPermissions(permissions.BasePermission):
                 user=request.user, board=obj.board
             ).exists()
         return BoardParticipant.objects.filter(
-            user=request.user, board=obj.board, role_in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]
+            user=request.user, board=obj.board, role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]
         ).exists()
 
 
@@ -38,7 +38,7 @@ class GoalPermissions(permissions.BasePermission):
                 user=request.user, board=obj.category.board
             ).exists()
         return BoardParticipant.objects.filter(
-            user=request.user, board=obj.category.board, role_in=[BoardParticipant.Role.owner,
+            user=request.user, board=obj.category.board, role__in=[BoardParticipant.Role.owner,
                                                                   BoardParticipant.Role.writer]).exists()
 
 
