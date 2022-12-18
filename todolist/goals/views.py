@@ -19,7 +19,7 @@ class BoardCreateView(CreateAPIView):
 
 class BoardView(RetrieveUpdateDestroyAPIView):
     model = Board
-    permission_classes = [permissions.IsAuthenticated, BoardPermissions]
+    permission_classes = [BoardPermissions]
     serializer_class = BoardSerializer
 
     def get_queryset(self):
@@ -75,20 +75,21 @@ class GoalCategoryListView(ListAPIView):
 class GoalCategoryView(RetrieveUpdateDestroyAPIView):
     model = Category
     serializer_class = GoalCategorySerializer
-    permission_classes = [permissions.IsAuthenticated, CategoryPermissions]
+    permission_classes = [CategoryPermissions]
 
     def get_queryset(self):
         return Category.objects.filter(board__participants__user=self.request.user, is_deleted=False)
 
     def perform_destroy(self, instance):
         instance.is_deleted = True
+        instance.goals.update(status=Goal.Status.archived)
         instance.save()
         return instance
 
 
 class GoalCreateView(CreateAPIView):
     model = Goal
-    permission_classes = [permissions.IsAuthenticated, GoalPermissions]
+    permission_classes = [GoalPermissions]
     serializer_class = GoalCreateSerializer
 
 
@@ -114,7 +115,7 @@ class GoalListView(ListAPIView):
 class GoalView(RetrieveUpdateDestroyAPIView):
     model = Goal
     serializer_class = GoalSerializer
-    permission_classes = [permissions.IsAuthenticated, GoalPermissions]
+    permission_classes = [GoalPermissions]
 
     def get_queryset(self):
         return Goal.objects.filter(category__board__participants__user=self.request.user)
@@ -127,7 +128,7 @@ class GoalView(RetrieveUpdateDestroyAPIView):
 
 class GoalCommentCreateView(CreateAPIView):
     model = Comment
-    permission_classes = [permissions.IsAuthenticated, CommentPermissions]
+    permission_classes = [CommentPermissions]
     serializer_class = GoalCommentCreateSerializer
 
 
@@ -145,7 +146,7 @@ class GoalCommentListView(ListAPIView):
 
 class GoalCommentView(RetrieveUpdateDestroyAPIView):
     model = Comment
-    permission_classes = [permissions.IsAuthenticated, CommentPermissions]
+    permission_classes = [CommentPermissions]
     serializer_class = GoalCommentSerializer
 
     def get_queryset(self):
