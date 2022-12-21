@@ -21,7 +21,7 @@ env = environ.Env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 
-environ.Env.read_env(os.path.join(BASE_DIR / '././.env'))
+environ.Env.read_env(os.path.join(BASE_DIR / '../.env'))
 
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'social_django',
     'django_filters',
     'goals',
+    'bot',
 ]
 
 MIDDLEWARE = [
@@ -164,3 +165,5 @@ REST_FRAMEWORK = {
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+BOT_API_TOKEN = env('BOT_API_TOKEN')

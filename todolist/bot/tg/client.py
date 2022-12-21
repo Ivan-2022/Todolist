@@ -1,6 +1,5 @@
 import requests
 from .dc import GET_UPDATES_RESPONSE_SCHEMA, SEND_MESSAGE_RESPONSE_SCHEMA, GetUpdatesResponse, SendMessageResponse
-# from dc import GetUpdatesResponse, SendMessageResponse
 
 
 class TgClient:
@@ -14,10 +13,8 @@ class TgClient:
         url = self.get_url('getUpdates')
         response = requests.post(url, params={'offset': offset, 'timeout': timeout})
         return GET_UPDATES_RESPONSE_SCHEMA.load(response.json())
-        # return GetUpdatesResponse.Schema().load(response.json())
 
     def send_message(self, chat_id: int, text: str) -> SendMessageResponse:
         url = self.get_url('sendMessage')
         response = requests.get(url, json={'chat_id': chat_id, 'text': text})
         return SEND_MESSAGE_RESPONSE_SCHEMA.load(response.json())
-        # return SendMessageResponse.Schema().load(response.json())

@@ -10,7 +10,7 @@ from marshmallow_dataclass import dataclass
 class MessageFrom:
     id: int
     is_bot: bool
-    username: str
+    username: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
 
@@ -46,7 +46,7 @@ class Message:
 @dataclass
 class UpdateObj:
     update_id: int
-    message: Message
+    message: Message | None
 
     class Meta:
         unknown = EXCLUDE
