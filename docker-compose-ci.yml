@@ -27,6 +27,17 @@ services:
       - "8000:8000"
     env_file:
       - ./.env
+  bot:
+    image: ivanim/diploma_todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    env_file:
+      - ./.env
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    command: python manage.py runbot
   migrations:
     image: ivanim/diploma_todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     env_file:

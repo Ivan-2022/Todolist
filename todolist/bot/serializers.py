@@ -4,10 +4,13 @@ from bot.models import TgUser
 
 
 class TgUserSerializer(serializers.ModelSerializer):
+    verification_code = serializers.CharField(write_only=True)
+    tg_id = serializers.SlugField(source='tg_chat_id', read_only=True)
 
     class Meta:
         model = TgUser
-        fields = ("tg_chat_id", "tg_user_id", "username", "verification_code")
+        read_only_fields = ("tg_id", "username", "tg_user_id")
+        fields = ("tg_id", "tg_user_id", "username", "verification_code")
 
     def validate(self, attrs):
         verification_code = attrs.get("verification_code")

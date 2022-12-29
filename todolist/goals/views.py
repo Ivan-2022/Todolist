@@ -38,7 +38,7 @@ class BoardView(RetrieveUpdateDestroyAPIView):
 
 class BoardListView(ListAPIView):
     model = Board
-    permission_classes = [BoardPermissions]  # проверить нужен ли IsAuthenticated
+    permission_classes = [BoardPermissions]
     serializer_class = BoardListSerializer
     filter_backends = [filters.OrderingFilter]
     ordering = ["title"]
