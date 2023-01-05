@@ -21,7 +21,7 @@ env = environ.Env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 
-environ.Env.read_env(os.path.join(BASE_DIR / '././.env'))
+environ.Env.read_env(os.path.join(BASE_DIR / '../.env'))
 
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
