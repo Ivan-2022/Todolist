@@ -13,7 +13,7 @@ class TgClient:
     def get_updates(self, offset: int = 0, timeout: int = 60) -> GET_UPDATES_RESPONSE_SCHEMA:
         url = self.get_url('getUpdates')
         response = requests.get(url, params={'offset': offset, 'timeout': timeout})
-        return GET_UPDATES_RESPONSE_SCHEMA().load(response.json())
+        return GET_UPDATES_RESPONSE_SCHEMA().load(response.json(), partial=True)
 
     def send_message(self, chat_id: int, text: str) -> SEND_MESSAGE_RESPONSE_SCHEMA:
         url = self.get_url('sendMessage')
