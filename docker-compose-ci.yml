@@ -10,15 +10,6 @@ services:
   api:
     image: ivanim/diploma_todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: always
-    environment:
-      POSTGRES_HOST: $POSTGRES_HOST
-      POSTGRES_USER: $POSTGRES_USER
-      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-      POSTGRES_DB: $POSTGRES_DB
-      SECRET_KEY: $SECRET_KEY
-      SOCIAL_AUTH_VK_OAUTH2_KEY: $SOCIAL_AUTH_VK_OAUTH2_KEY
-      SOCIAL_AUTH_VK_OAUTH2_SECRET: $SOCIAL_AUTH_VK_OAUTH2_SECRET
-      BOT_API_TOKEN: $BOT_API_TOKEN
     depends_on:
       postgres:
         condition: service_healthy
@@ -33,8 +24,6 @@ services:
     env_file:
       - ./.env
     restart: always
-    environment:
-      BOT_API_TOKEN: $BOT_API_TOKEN
     depends_on:
       postgres:
         condition: service_healthy
@@ -55,8 +44,6 @@ services:
       POSTGRES_USER: $POSTGRES_USER
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
       POSTGRES_DB: $POSTGRES_DB
-      SOCIAL_AUTH_VK_OAUTH2_KEY: $SOCIAL_AUTH_VK_OAUTH2_KEY
-      SOCIAL_AUTH_VK_OAUTH2_SECRET: $SOCIAL_AUTH_VK_OAUTH2_SECRET
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
