@@ -41,6 +41,7 @@ class Command(BaseCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tg_client = TgClient(settings.BOT_API_TOKEN)
+        self.offset = 0
 
     @staticmethod
     def _generate_verification_code():
@@ -77,14 +78,14 @@ class Command(BaseCommand):
                                                is_deleted=False,
                                                title=title).first()
             if new_goal:
-                FSM_STATES[tg_user.tg_chat_id].goal.cat_id = new_goal.id
+                FSM_STATES[tg_user.chat_id].goal.cat_id = new_goal.id
                 self.tg_client.send_message(msg.chat.id, "введите название цели для ее создания")
-                FSM_STATES[tg_user.tg_chat_id].state = StateEnum.CHOSEN_CATEGORY
+                FSM_STATES[tg_user.chat_id].state = StateEnum.CHOSEN_CATEGORY
                 return
         self.tg_client.send_message(msg.chat.id, "такой категории нет")
 
     def handle_save_new_goal(self, msg: Message, tg_user: TgUser):
-        goal: NewGoal = FSM_STATES[tg_user.tg_chat_id].goal
+        goal: NewGoal = FSM_STATES[tg_user.chat_id].goal
         goal.goal_title = msg.text
         if goal.complete():
             Goal.objects.create(
@@ -96,25 +97,25 @@ class Command(BaseCommand):
         else:
             self.tg_client.send_message(msg.chat.id, "что-то пошло не так")
 
-        FSM_STATES.pop(tg_user.tg_chat_id, None)
+        FSM_STATES.pop(tg_user.chat_id, None)
 
     def handle_verified_user(self, msg: Message, tg_user: TgUser):
         if not msg.text:
             return
         if "goals" in msg.text:
             self.handle_goals_list(msg=msg, tg_user=tg_user)
-            FSM_STATES[tg_user.tg_chat_id] = FSMData(state=StateEnum.VIEW_GOALS_LIST, goal=None)
+            FSM_STATES[tg_user.chat_id] = FSMData(state=StateEnum.VIEW_GOALS_LIST, goal=None)
 
         elif "create" in msg.text:
             self.handle_categories_list(msg=msg, tg_user=tg_user)
-            FSM_STATES[tg_user.tg_chat_id] = FSMData(state=StateEnum.CATEGORY_STATE, goal=NewGoal())
+            FSM_STATES[tg_user.chat_id] = FSMData(state=StateEnum.CATEGORY_STATE, goal=NewGoal())
 
-        elif "cancel" in msg.text and tg_user.tg_chat_id in FSM_STATES:
-            FSM_STATES.pop(tg_user.tg_chat_id)
+        elif "cancel" in msg.text and tg_user.chat_id in FSM_STATES:
+            FSM_STATES.pop(tg_user.chat_id)
             self.tg_client.send_message(msg.chat.id, "операция прервана, введите команду")
 
-        elif tg_user.tg_chat_id in FSM_STATES:
-            state: StateEnum = FSM_STATES[tg_user.tg_chat_id].state
+        elif tg_user.chat_id in FSM_STATES:
+            state: StateEnum = FSM_STATES[tg_user.chat_id].state
 
             if state == StateEnum.CATEGORY_STATE:
                 self.handle_save_category(msg=msg, tg_user=tg_user)
@@ -129,7 +130,7 @@ class Command(BaseCommand):
 
     def handle_message(self, msg: Message):
         tg_user, created = TgUser.objects.get_or_create(
-            tg_chat_id=msg.chat.id,
+            chat_id=msg.chat.id,
             defaults={
                 "username": msg.from_.username,
             },
@@ -144,10 +145,9 @@ class Command(BaseCommand):
             self.handle_user_without_verification(msg, tg_user)
 
     def handle(self, *args, **options):
-        offset = 0
 
         while True:
-            res = self.tg_client.get_updates(offset=offset)
+            res = self.tg_client.get_updates(offset=self.offset)
             for item in res.result:
-                offset = item.update_id + 1
-                self.handle_message(msg=item.message)
+                self.offset = item.update_id + 1
+                self.handle_message(item.message)

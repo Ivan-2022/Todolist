@@ -22,6 +22,6 @@ class VerificationView(GenericAPIView):
         tg_user.user = self.request.user
         tg_user.save(update_fields=["user"])
         instance_serializer: TgUserSerializer = self.get_serializer(tg_user)
-        TgClient(settings.BOT_API_TOKEN).send_message(tg_user.tg_chat_id, "Подтверждение - успешно")
+        TgClient(settings.BOT_API_TOKEN).send_message(tg_user.chat_id, "Подтверждение - успешно")
 
         return Response(instance_serializer.data, status=status.HTTP_200_OK)

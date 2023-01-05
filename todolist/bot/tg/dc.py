@@ -46,7 +46,7 @@ class Message:
 @dataclass
 class UpdateObj:
     update_id: int
-    message: Message | None
+    message: Message
 
     class Meta:
         unknown = EXCLUDE
@@ -70,5 +70,5 @@ class SendMessageResponse:
         unknown = EXCLUDE
 
 
-GET_UPDATES_RESPONSE_SCHEMA = marshmallow_dataclass.class_schema(GetUpdatesResponse)()
-SEND_MESSAGE_RESPONSE_SCHEMA = marshmallow_dataclass.class_schema(SendMessageResponse)()
+GET_UPDATES_RESPONSE_SCHEMA = marshmallow_dataclass.class_schema(GetUpdatesResponse)
+SEND_MESSAGE_RESPONSE_SCHEMA = marshmallow_dataclass.class_schema(SendMessageResponse)
