@@ -18,6 +18,7 @@ services:
       SECRET_KEY: $SECRET_KEY
       SOCIAL_AUTH_VK_OAUTH2_KEY: $SOCIAL_AUTH_VK_OAUTH2_KEY
       SOCIAL_AUTH_VK_OAUTH2_SECRET: $SOCIAL_AUTH_VK_OAUTH2_SECRET
+      BOT_API_TOKEN: $BOT_API_TOKEN
     depends_on:
       postgres:
         condition: service_healthy
@@ -40,7 +41,7 @@ services:
       SECRET_KEY: $SECRET_KEY
       SOCIAL_AUTH_VK_OAUTH2_KEY: $SOCIAL_AUTH_VK_OAUTH2_KEY
       SOCIAL_AUTH_VK_OAUTH2_SECRET: $SOCIAL_AUTH_VK_OAUTH2_SECRET
-      BOT_API_TOKEN: $secrets.BOT_API_TOKEN
+      BOT_API_TOKEN: $BOT_API_TOKEN
     depends_on:
       postgres:
         condition: service_healthy
@@ -65,7 +66,7 @@ services:
       SECRET_KEY: $SECRET_KEY
       SOCIAL_AUTH_VK_OAUTH2_KEY: $SOCIAL_AUTH_VK_OAUTH2_KEY
       SOCIAL_AUTH_VK_OAUTH2_SECRET: $SOCIAL_AUTH_VK_OAUTH2_SECRET
-      BOT_API_TOKEN: $secrets.BOT_API_TOKEN
+      BOT_API_TOKEN: $BOT_API_TOKEN
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
