@@ -4,7 +4,7 @@ from .models import BoardParticipant
 
 
 class BoardPermissions(permissions.IsAuthenticated):
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, view, obj) -> bool:
         if request.method in permissions.SAFE_METHODS:
             return BoardParticipant.objects.filter(
                 user=request.user, board=obj
@@ -15,7 +15,7 @@ class BoardPermissions(permissions.IsAuthenticated):
 
 
 class CategoryPermissions(permissions.IsAuthenticated):
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, view, obj) -> bool:
         if request.method in permissions.SAFE_METHODS:
             return BoardParticipant.objects.filter(
                 user=request.user, board=obj.board
@@ -26,7 +26,7 @@ class CategoryPermissions(permissions.IsAuthenticated):
 
 
 class GoalPermissions(permissions.IsAuthenticated):
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, view, obj) -> bool:
         if request.method in permissions.SAFE_METHODS:
             return BoardParticipant.objects.filter(
                 user=request.user, board=obj.category.board
@@ -37,7 +37,7 @@ class GoalPermissions(permissions.IsAuthenticated):
 
 
 class CommentPermissions(permissions.IsAuthenticated):
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, view, obj) -> bool:
         if request.method in permissions.SAFE_METHODS:
             return BoardParticipant.objects.filter(
                 user=request.user, board=obj.goal.category.board

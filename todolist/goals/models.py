@@ -3,6 +3,8 @@ from django.utils import timezone
 
 
 class DatesModelMixin(models.Model):
+    """ Абстрактный класс, описывающий поля created и updated,
+        остальные модели сущностей наследуются от него """
     class Meta:
         abstract = True
 

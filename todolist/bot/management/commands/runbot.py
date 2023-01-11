@@ -38,16 +38,20 @@ FSM_STATES: dict[int, FSMData] = dict()
 
 
 class Command(BaseCommand):
+    help = 'Функционал телеграм-бота'
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tg_client = TgClient(settings.BOT_API_TOKEN)
         self.offset = 0
 
     @staticmethod
-    def _generate_verification_code():
+    def _generate_verification_code() -> str:
+        """ Генерирует случайный пароль """
         return os.urandom(12).hex()
 
     def handle_user_without_verification(self, msg: Message, tg_user: TgUser):
+        """ Верификация пользователя """
         code = self._generate_verification_code()
         tg_user.verification_code = code
         tg_user.save(update_fields=['verification_code'])
@@ -58,11 +62,13 @@ class Command(BaseCommand):
         )
 
     def handle_goals_list(self, msg: Message, tg_user: TgUser):
+        """ Получение списка целей пользователя """
         goals_list = '\n'.join([f'{goal.title}' for goal in Goal.objects.filter(
             category__board__participants__user_id=tg_user.user_id,).exclude(status=Goal.Status.archived)])
         self.tg_client.send_message(msg.chat.id, f'список ваших целей:\n {goals_list}' or "Список целей пуст")
 
     def handle_categories_list(self, msg: Message, tg_user: TgUser):
+        """ Получение списка категорий для создания новой цели"""
         category_list = [f'{cat.title}' for cat in Category.objects.filter(
             board__participants__user_id=tg_user.user_id,
             is_deleted=False)]
@@ -72,6 +78,7 @@ class Command(BaseCommand):
             self.tg_client.send_message(msg.chat.id, "категории не найдены")
 
     def handle_save_category(self, msg: Message, tg_user: TgUser):
+        """ Выбор категории для создания новой цели"""
         if msg.text:
             title = msg.text
             new_goal = Category.objects.filter(board__participants__user_id=tg_user.user_id,
@@ -85,6 +92,7 @@ class Command(BaseCommand):
         self.tg_client.send_message(msg.chat.id, "такой категории нет")
 
     def handle_save_new_goal(self, msg: Message, tg_user: TgUser):
+        """ Создание новой цели """
         goal: NewGoal = FSM_STATES[tg_user.chat_id].goal
         goal.goal_title = msg.text
         if goal.complete():
@@ -100,6 +108,7 @@ class Command(BaseCommand):
         FSM_STATES.pop(tg_user.chat_id, None)
 
     def handle_verified_user(self, msg: Message, tg_user: TgUser):
+        """ Работа с доступными верифицированному пользователю командами """
         if not msg.text:
             return
         if "goals" in msg.text:
@@ -129,6 +138,7 @@ class Command(BaseCommand):
         print(FSM_STATES)
 
     def handle_message(self, msg: Message):
+        """ Проверка наличия пользователя и выдача верификационного ключа новому пользователю """
         tg_user, created = TgUser.objects.get_or_create(
             chat_id=msg.chat.id,
             defaults={
@@ -145,7 +155,7 @@ class Command(BaseCommand):
             self.handle_user_without_verification(msg, tg_user)
 
     def handle(self, *args, **options):
-
+        """ Запуск бота """
         while True:
             res = self.tg_client.get_updates(offset=self.offset)
             for item in res.result:

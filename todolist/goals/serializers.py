@@ -29,7 +29,7 @@ class BoardSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ("id", "created", "updated")
 
-    def update(self, instance, validated_data):
+    def update(self, instance: Board, validated_data: dict) -> Board:
         owner = validated_data.pop("user")
         new_participants = validated_data.pop("participants")
         new_by_id = {part["user"].id: part for part in new_participants}
@@ -69,7 +69,7 @@ class BoardCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "created", "updated")
         fields = "__all__"
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict) -> Board:
         user = validated_data.pop("user")
         board = Board.objects.create(**validated_data)
         BoardParticipant.objects.create(
@@ -120,7 +120,6 @@ class GoalCreateSerializer(serializers.ModelSerializer):
         if value.is_deleted:
             raise serializers.ValidationError("not allowed in deleted category")
 
-        # if self.instance.category.board_id != value.board_id:
         if value.user != self.context["request"].user:
             raise serializers.ValidationError("not owner of category")
 
